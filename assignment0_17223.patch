@@ -1,0 +1,147 @@
+From 1795111f27693fcb58febf6612cd59425b24612b Mon Sep 17 00:00:00 2001
+From: Nabarun Sarkar <nabsarkar@gmail.com>
+Date: Thu, 23 Jan 2020 17:07:17 +0530
+Subject: [PATCH 1/4] hello: hello.c: added a my_precious system call for OS
+ course
+
+A blank (i.e., noop) system call is implemented.
+---
+ Makefile                               | 2 +-
+ arch/x86/entry/syscalls/syscall_64.tbl | 1 +
+ include/linux/syscalls.h               | 1 +
+ 3 files changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/Makefile b/Makefile
+index d5713e7..5a85daa 100644
+--- a/Makefile
++++ b/Makefile
+@@ -958,7 +958,7 @@ endif
+ PHONY += prepare0
+ 
+ ifeq ($(KBUILD_EXTMOD),)
+-core-y		+= kernel/ certs/ mm/ fs/ ipc/ security/ crypto/ block/
++core-y		+= kernel/ certs/ mm/ fs/ ipc/ security/ crypto/ block/ hello/
+ 
+ vmlinux-dirs	:= $(patsubst %/,%,$(filter %/, $(init-y) $(init-m) \
+ 		     $(core-y) $(core-m) $(drivers-y) $(drivers-m) \
+diff --git a/arch/x86/entry/syscalls/syscall_64.tbl b/arch/x86/entry/syscalls/syscall_64.tbl
+index f0b1709..a31a90d 100644
+--- a/arch/x86/entry/syscalls/syscall_64.tbl
++++ b/arch/x86/entry/syscalls/syscall_64.tbl
+@@ -386,3 +386,4 @@
+ 545	x32	execveat		__x32_compat_sys_execveat/ptregs
+ 546	x32	preadv2			__x32_compat_sys_preadv64v2
+ 547	x32	pwritev2		__x32_compat_sys_pwritev64v2
++548     64	hello	                my_precious
+diff --git a/include/linux/syscalls.h b/include/linux/syscalls.h
+index 257cccb..b90bb32 100644
+--- a/include/linux/syscalls.h
++++ b/include/linux/syscalls.h
+@@ -1314,5 +1314,6 @@ static inline unsigned int ksys_personality(unsigned int personality)
+ 
+ 	return old;
+ }
++asmlinkage long my_precious(void);
+ 
+ #endif
+-- 
+1.9.1
+
+
+From 8ffff40a27d854db3cee25c6ee3c2cc658f355a8 Mon Sep 17 00:00:00 2001
+From: Nabarun Sarkar <nabsarkar@gmail.com>
+Date: Thu, 23 Jan 2020 17:33:30 +0530
+Subject: [PATCH 2/4] hello: hello_c: Adding a custom system call my_precious
+ for coursework
+
+Added a blank (i.e., noop) system call my_precious
+---
+ hello/Makefile | 1 +
+ hello/hello.c  | 7 +++++++
+ 2 files changed, 8 insertions(+)
+ create mode 100644 hello/Makefile
+ create mode 100644 hello/hello.c
+
+diff --git a/hello/Makefile b/hello/Makefile
+new file mode 100644
+index 00000000..c562aa1
+--- /dev/null
++++ b/hello/Makefile
+@@ -0,0 +1 @@
++obj-y := hello.o
+diff --git a/hello/hello.c b/hello/hello.c
+new file mode 100644
+index 00000000..ee5443f
+--- /dev/null
++++ b/hello/hello.c
+@@ -0,0 +1,7 @@
++#include <linux/kernel.h>
++
++asmlinkage long my_precious(void)
++{
++        printk("Hello world!\n");
++        return 0;
++}
+-- 
+1.9.1
+
+
+From 2f98918cd7efad438bb3f7cf0fba188d2767d2b7 Mon Sep 17 00:00:00 2001
+From: Nabarun Sarkar <nabsarkar@gmail.com>
+Date: Thu, 23 Jan 2020 17:47:54 +0530
+Subject: [PATCH 3/4] hello: hello_c: Added a system call my_precious
+
+Added a system call for the coursework.
+
+Signed-off-by: Nabarun Sarkar <nabsarkar@gmail.com>
+---
+ hello/hello.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
+
+diff --git a/hello/hello.c b/hello/hello.c
+index ee5443f..fa5149b 100644
+--- a/hello/hello.c
++++ b/hello/hello.c
+@@ -1,7 +1,6 @@
+ #include <linux/kernel.h>
+ 
+-asmlinkage long my_precious(void)
+-{
+-        printk("Hello world!\n");
+-        return 0;
++asmlinkage long my_precious(void) {
++	printk("Hello world!\n");
++	return 0;
+ }
+-- 
+1.9.1
+
+
+From 38cefb8e8fdcaad5e44d5aba72f86084fc8e0401 Mon Sep 17 00:00:00 2001
+From: Nabarun Sarkar <nabsarkar@gmail.com>
+Date: Thu, 23 Jan 2020 17:58:52 +0530
+Subject: [PATCH 4/4] hello: hello_c: Added a system call my_precious
+
+Added a system call for the coursework.
+
+Signed-off-by: Nabarun Sarkar <nabsarkar@gmail.com>
+---
+ hello/hello.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/hello/hello.c b/hello/hello.c
+index fa5149b..5293554 100644
+--- a/hello/hello.c
++++ b/hello/hello.c
+@@ -1,6 +1,7 @@
+ #include <linux/kernel.h>
+ 
+-asmlinkage long my_precious(void) {
++asmlinkage long my_precious(void)
++{
+ 	printk("Hello world!\n");
+ 	return 0;
+ }
+-- 
+1.9.1
+
